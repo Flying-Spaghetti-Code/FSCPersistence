@@ -153,7 +153,6 @@ public class FSCPersistence {
     private func deleteKeys() {
         
         keys = []
-        let encodedKeys = try! JSONEncoder().encode(keys)
         let fileURL = folder.appendingPathComponent(persistenceKeys)
         try? fileManager.removeItem(atPath: fileURL.path)
     }
@@ -161,8 +160,15 @@ public class FSCPersistence {
     private func versionCheck() throws {
         
         let storedVersion = UserDefaults.standard.integer(forKey: persistenceVersion)
-        guard storedVersion > 0 else { return }
-        guard storedVersion >= version else { throw PersistenceError.versionIsTooLow }
+        guard storedVersion > 0 else {
+            
+            UserDefaults.standard.set(version, forKey: persistenceVersion)
+            return
+        }
+        guard storedVersion <= version else {
+            
+            throw PersistenceError.versionIsTooLow
+        }
         if version > storedVersion {
             
             for key in keys {
@@ -172,5 +178,6 @@ public class FSCPersistence {
             }
             deleteKeys()
         }
+        UserDefaults.standard.set(version, forKey: persistenceVersion)
     }
 }
