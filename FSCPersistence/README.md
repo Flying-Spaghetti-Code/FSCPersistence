@@ -1,3 +1,3 @@
 # FSCPersistence
 
-A description of this package.
+This is a general usage Library. It deals with the intricacies of persistance and is highly customizable.
