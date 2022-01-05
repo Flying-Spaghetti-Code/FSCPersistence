@@ -6,6 +6,11 @@ public class FSCPersistence {
     /// An object that contains the necessary configurations for the Persistence
     public struct Configuration {
         
+        public init(version: Int, groupIdentifier: String? = nil) {
+            self.version = version
+            self.groupIdentifier = groupIdentifier
+        }
+        
         /// Increase this value if you need to force a migration, wiping all previously stored data. Must be bigger than 0
         public var version: Int
         
