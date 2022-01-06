@@ -76,11 +76,13 @@ public class FSCPersistence {
     
     // MARK: - Public Methods
     
-    /// Saves a given object into the specified storage
-    public func save<T: Codable>(object: T, withKey key: String, intoStorage type: StorageType) throws {
+    /// Generic method to save data into one of the available storage type
+    /// - Parameters:
+    ///   - data: encoded data to be saved
+    ///   - key: unique key
+    ///   - type: storage location
+    public func save(data: Data, withKey key: String, intoStorage type: StorageType) throws {
         
-        let encoder = JSONEncoder()
-        let data = try encoder.encode(object)
         switch type {
                 
             case .settings: settings.set(data, forKey: key)
@@ -91,9 +93,12 @@ public class FSCPersistence {
         store(key: key)
     }
     
-    /// Loads a given object from the specified storage
-    /// - Returns: Codable object as specified in the ObjectType parametre
-    public func load<T: Codable>(objectType: T.Type, withKey key: String, fromStorage type: StorageType) throws -> T {
+    /// Returns encoded data from a given storage type
+    /// - Parameters:
+    ///   - key: unique key used to save the data
+    ///   - type: storage location
+    /// - Returns: stored encoded data
+    public func load(withKey key: String, fromStorage type: StorageType) throws -> Data {
         
         var data: Data
         switch type {
@@ -117,6 +122,23 @@ public class FSCPersistence {
                     throw PersistenceError.failedToLoadData(inStorage: type)
                 }
         }
+        
+        return data
+    }
+    
+    /// Saves a given object into the specified storage
+    public func save<T: Codable>(object: T, withKey key: String, intoStorage type: StorageType) throws {
+        
+        let encoder = JSONEncoder()
+        let data = try encoder.encode(object)
+        try save(data: data, withKey: key, intoStorage: type)
+    }
+    
+    /// Loads a given object from the specified storage
+    /// - Returns: Codable object as specified in the ObjectType parametre
+    public func load<T: Codable>(objectType: T.Type, withKey key: String, fromStorage type: StorageType) throws -> T {
+        
+        let data = try load(withKey: key, fromStorage: type)
         let decoder = JSONDecoder()
         let result = try decoder.decode(objectType.self, from: data)
         
