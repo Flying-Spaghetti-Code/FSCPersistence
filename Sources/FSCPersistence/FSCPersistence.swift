@@ -73,6 +73,12 @@ public class FSCPersistence {
         try versionCheck()
     }
     
+    /// Default initializer. It creates a configuration object on version 1 and without Group Identifier.
+    public convenience init() throws {
+        
+        let config = Configuration(version: 1, groupIdentifier: nil)
+        try self.init(withConfiguration: config)
+    }
     
     // MARK: - Public Methods
     
