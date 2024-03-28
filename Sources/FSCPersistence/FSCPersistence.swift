@@ -67,7 +67,7 @@ public class FSCPersistence {
         else {
             
             settings = UserDefaults.standard
-            folder = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+            folder = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
         }
         loadKeys()
         try versionCheck()
